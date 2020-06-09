@@ -6,28 +6,29 @@ const form = document.getElementById('form')
 const text = document.getElementById('text')
 const amount = document.getElementById('amount')
 
-const dummyTransactions = [{
-        id: 1,
-        text: 'Flower',
-        amount: -20
-    },
-    {
-        id: 2,
-        text: 'Salary',
-        amount: 300
-    },
-    {
-        id: 3,
-        text: 'Book',
-        amount: -10
-    },
-    {
-        id: 4,
-        text: 'Camera',
-        amount: 150
-    },
-];
-let transactions = dummyTransactions;
+// const dummyTransactions = [{
+//         id: 1,
+//         text: 'Flower',
+//         amount: -20
+//     },
+//     {
+//         id: 2,
+//         text: 'Salary',
+//         amount: 300
+//     },
+//     {
+//         id: 3,
+//         text: 'Book',
+//         amount: -10
+//     },
+//     {
+//         id: 4,
+//         text: 'Camera',
+//         amount: 150
+//     },
+// ];
+const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'))
+let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 
 // Add transaction
 function addTransaction(e) {
@@ -42,8 +43,12 @@ function addTransaction(e) {
             amount: Number.parseInt(amount.value)
         }
         transactions.push(transaction)
+
         addTransactionDOM(transaction)
+
         updateValues()
+
+
         text.value = '';
         amount.value = '';
     }
@@ -73,6 +78,7 @@ function addTransactionDOM(transaction) {
 
 // Update the balance, income and expense
 function updateValues() {
+    updateLocalStorage()
     const amounts = transactions.map(transaction => transaction.amount)
 
     const total = amounts.reduce((acc, item) => acc += item, 0)
@@ -97,6 +103,11 @@ function removeTransaction(id) {
     transactions = transactions.filter(transaction => transaction.id !== id)
 
     init()
+}
+
+// Update local storage transactions
+function updateLocalStorage() {
+    localStorage.setItem('transactions', JSON.stringify(transactions))
 }
 
 // Init app
